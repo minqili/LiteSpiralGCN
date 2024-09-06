@@ -1,0 +1,28 @@
+VERSION: 0.1
+PHASE: 'demo_pt3D' #'train', 'eval','pred','demo_pt3D','demo','demo_test_new_data'
+MODEL:
+  NAME: LiteSpiralGCN
+
+  SPIRAL:
+    TYPE: 'DSConv'
+  RESUME: LSG\out\MultipleDatasets\LiteSpiralGCN\checkpoints\LiteSpiralGCN_checkpoint_076.pt
+DATA:
+  CONTRASTIVE: True
+  FREIHAND:
+    USE: True
+    ROOT: 'data/FreiHAND'
+  COMPHAND:
+    USE: True
+    ROOT: 'data/Compdata'
+TRAIN:
+  DATASET: 'MultipleDatasets'
+  EPOCHS: 150
+  BATCH_SIZE: 20
+  LR: 0.001
+  GPU_ID: 0,
+VAL:
+  DATASET: 'Ge'
+  BATCH_SIZE: 1
+TEST:
+  DATASET: 'FreiHAND'
+  SAVE_PRED: False
