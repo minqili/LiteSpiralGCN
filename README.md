@@ -6,7 +6,7 @@
 This repo is the PyTorch implementation of hand mesh reconstruction described in  paper **LiteSpiralGCN**.
 
 ## Update
-+ 2024-5-20. Add LiteSpiralGCN model.
++ 2024-8-20. Add LiteSpiralGCN model.
 
 ## Features
 - [x] SpricalGCN
