@@ -1,59 +1,158 @@
-# VITON-DRR: Details Retention Virtual Try-on via Non-rigid Registration
+
+# LiteSpiralGCN:Lightweight 3D Hand Mesh Reconstruction via GCN and Spiral Convolution
 
 
-This repo is a pytorch implementation of the virtual try-on paper **VITON-DRR**
+## Introduction
+This repo is the PyTorch implementation of hand mesh reconstruction described in **LiteSpiralGCN**.
 
-## Abstract
-Image-based virtual try-on aims to fit a target garment to a specific person image and has attracted extensive research attention because of its huge application potential in the e-commerce and fashion industries. To generate high-quality try-on results,  accurately warping the clothing item to fit the human body plays a significant role, as slight misalignment may lead to unrealistic artifacts in the fitting image. Most existing methods warp the clothing by feature matching and thin-plate spline (TPS). However, it often failed to preserve clothing details  due to self-occlusion, severe misalignment between poses, etc. To address these challenges, this paper proposes a detail retention virtual try-on method via accurate non-rigid registration (VITON-DRR) for diverse human poses. Specifically, we reconstruct a human semantic segmentation using a dual-pyramid-structured feature extractor. Then, a novel Deformation Module is designed for extracting the cloth key points and warping them through an accurate non-rigid registration algorithm. Finally, the Image Synthesis Module is designed to synthesize the deformed garment image and generate the human pose information adaptively. Compared with traditional methods, the proposed VITON-DRR can make the deformation of fitting images more accurate and retain more garment details. The experimental results demonstrate that the proposed method performs better than state-of-the-art methods.
-![Pipeline Structure](./structure.png)
+## Update
++ 2024-5-20. Add LiteSpiralGCN model.
 
-## Installation
-`ipdb == 0.13.13`  
-`opencv-python == 4.7.0.72`   
-`pillow == 9.4.0`  
-`torch == 1.12.1`  
-`tensorboardX == 2.6`  
-`tqdm == 4.65.0`  
-`scikit-image == 0.18.3`  
-`torchgeometry == 0.1.2`  
-`MATLAB 2021b`   
+## Features
+- [x] SpricalGCN
+- [x] Attention Sampling
+- [x] Weight-Shared Hand Mesh Refinement
 
-## Data preparation
-#### Dataset
-**VITON Dataset** This dataset is presented in [VITON](https://github.com/xthan/VITON), containing 19,000 image pairs, each of which includes a front-view woman image and a top clothing image. After removing the invalid image pairs, it yields 16,253 pairs, further splitting into a training set of 14,221 pairs and a testing set of 2,032 pairs.
+## Install 
++ Environment
+    ```
+    conda create -n LiteSpiralGCN python=3.9
+    conda activate LiteSpiralGCN
+    ```
++ Please follow [official suggestions](https://pytorch.org/) to install pytorch and torchvision. We use pytorch=1.12.1-cuda11.3, torchvision=0.13.1
++ Requirements
+    ```
+    pip install -r requirements.txt
+    ```
++ You should accept [MANO LICENCE](https://mano.is.tue.mpg.de/license.html). Download the MANO model from [this link](https://mano.is.tue.mpg.de/download.php) and put `MANO_RIGHT.pkl` into [$ROOT/template](template).
 
-####  Data Pre-processing
-###### 1. DensePose
-Please check the [detectron2](https://github.com/facebookresearch/detectron2/tree/main/projects/DensePose) repository. Dense pose image obtained by running `apply_net.py`.
+## Real-time demo
++ Download the pre-trained weights of LiteSpiralGCN from [Baidu cloud](https://pan.baidu.com/s/1n5OtppDWe6UQX7bhBAbvww) and fill in the correct weight address in line 8 of the [$ROOT/LSG/LiteSpiralGCN.yml](LSG/configs/LiteSpiralGCN.yml).
++ To visualize the 778 vertices of the generated hand mesh using the OpenCV library, and visualize the 21 2D hand keypoints generated in the intermediate stages of the model, please run:
+  ```
+  python ./LSG/main.py --PHASE demo --config_file .\LSG\configs\LiteSpiralGCN.yml
+  ```
+  The real-time results during execution are shown in the animated image below.  
 
-###### 2. Parse agnostic
-You can get a parse agnostic image by the code `./segment/get_parse_agnostic.py`.
+  ![img](docx/handmesh_verts.gif)
++ We also utilize the `PyTorch3D` library for more detailed rendering to approximate a more realistic 3D hand. Please run:
+  ```
+  python ./LSG/main.py --PHASE demo_pt3D --config_file .\LSG\configs\LiteSpiralGCN.yml
+  ```
+  The real-time results during execution are shown in the animated image below.  
+  ![img](docx/handmesh2.gif)
+## Mesh file generation
++ We simultaneously generate rendered images of the hand mesh and 2D hand pose, along with files in PLY file(e.g., 000_mesh.ply) for the hand mesh. Please run:
+  ```
+  python ./LSG/main.py --PHASE demo_test_new_data --config_file .\LSG\configs\LiteSpiralGCN.yml
+  ```
+  NOTE: To make the paths appropriate, please modify the 882nd, 885th, and 936th lines of the [$ROOT/LSG/runner.py](LSG/runner.py).
+  
+  The following is the demonstration result.
+  <p float="left">
+  <img src="docx/result_00051.jpg" width="73.2%" />
+  </p>
+  The following are visualization images of the hand mesh in PLY format from different perspectives.
+  <p float="left">
+    <img src="docx/meshfile1.png" width="36.5%" />
+    <img src="docx/meshfile2.png" width="36.5%" />
+  </p>
 
+## Dataset preparation
+#### FreiHAND
++ Please download FreiHAND dataset from [this link](https://lmb.informatik.uni-freiburg.de/projects/freihand/), and create a soft link in `data`, i.e., `data/FreiHAND`.
++ Download mesh GT file `freihand_train_mesh.zip` from [Baidu cloud](https://pan.baidu.com/s/1n5OtppDWe6UQX7bhBAbvww), and unzip it under `data/FreiHAND/training`
+#### Real World Testset
++ Please download the dataset from [this link](https://github.com/3d-hand-shape/hand-graph-cnn/tree/master/data/real_world_testset), and create a soft link in `data`, i.e., `data/Ge`.
+#### Complement data
++ You can download files from [here](https://drive.google.com/drive/folders/1V3Ioy3H1vGPG4mURsCon9TE7j5eGFanN) and unzip it. Then, create a soft link in `data`, i.e., `data/Compdate`.
 
+#### Data dir
+```  
+${ROOT}  
+|-- data  
+|   |-- FreiHAND
+|   |   |-- training
+|   |   |   |-- rgb
+|   |   |   |-- mask
+|   |   |   |-- mesh
+|   |   |-- evaluation
+|   |   |   |-- rgb
+|   |   |-- evaluation_K.json
+|   |   |-- evaluation_scals.json
+|   |   |-- training_K.json
+|   |   |-- training_mano.json
+|   |   |-- training_xyz.json
+|   |-- Ge
+|   |   |-- images
+|   |   |-- params.mat
+|   |   |-- pose_gt.mat
+|   |-- Compdata
+|   |   |-- base_pose
+|   |   |-- trans_pose_batch1
+|   |   |-- trans_pose_batch2
+|   |   |-- trans_pose_batch3
+```  
+Please fill in the correct dataset address in [$ROOT/LSG/configs/LiteSpiralGCN.yml](LSG/configs/LiteSpiralGCN.yml) or [$ROOT/LSG/configs/defaults.py](LSG/configs/defaults.py).
 
+## Training
 
++ If you wish to use the test set of FreiHAND directly to guide training, please download the FreiHAND test set labels from [this link](https://lmb.informatik.uni-freiburg.de/data/freihand/FreiHAND_pub_v2_eval.zip). After downloading, the file structure should be as follows:
 
-## Train the segment model
-You can train the Human Semantics Generation Module with `./segment/train_condition.py`.
+```
+out  
+|-- MultipleDatasets 
+|   |-- LiteSpiralGCN
+|   |   |-- ref
+|   |   |   |-- evaluation_errors.json
+|   |   |   |-- evaluation_K.json
+|   |   |   |-- evaluation_mano.json
+|   |   |   |-- evaluation_scale.json
+|   |   |   |-- evaluation_verts.json
+|   |   |   |-- evaluation_xyz.json
+|   |   |-- checkpoints 
+|   |   |   |-- mobrecon_GCN_checkpoint_076.pt
+|   |   |-- log.log
+|   |   |-- board
+|   |   |-- test
 
-## test 
+```  
++ Download the pre-trained weights of densestack from [Baidu cloud](https://pan.baidu.com/s/1n5OtppDWe6UQX7bhBAbvww) and fill in the correct weight address in line 234 of [$ROOT/LSG/models/densestack.py](LSG/models/densestack.py).
++ Please fill in appropriate training parameters in [$ROOT\LSG\configs\LiteSpiralGCN.yml](LSG/configs/LiteSpiralGCN.yml). Run:
+```
+python ./LSG/main.py --exp_name LiteSpiralGCN --PHASE train --Local_testing --config_file .\LSG\configs\LiteSpiralGCN.yml
+```
+## Evaluation
+#### FreiHAND
++ Please run the following code to generate the 3D hand mesh vertex file.
+```
+python ./LSG/main.py --exp_name LiteSpiralGCN --PHASE pred --config_file .\LSG\configs\LiteSpiralGCN.yml
+```
+JSON file will be saved as [$ROOT/LSG/out/MultipleDatasets/LiteSpiralGCN/](LSG/out/MultipleDatasets/LiteSpiralGCN). You can submmit this file to the [official server](https://competitions.codalab.org/competitions/21238) for evaluation.
++ If you want to use the local FreiHAND test set labels for testing, please run:
 
-1. The reconstructed human semantic segmentation results are generated by running `./segment/test_condition.py`.
-2. You can run `test.py` to generate virtual try-on results.  
+```
+python ./LSG/main.py --exp_name LiteSpiralGCN --PHASE pred  --Local_testing --config_file .\LSG\configs\LiteSpiralGCN.yml
+```
+NOTE: Please fill in the correct addresses at lines 473, 474, 475, and 478 in [$ROOT/LSG/runner.py](LSG/runner.py) according to the comments next to the code.
 
-## Checkpoint 
-We used the pre-trained models `latest_net_G2.pth` from ACGPN, which can be download [here](https://drive.google.com/file/d/1UWT6esQIU_d4tUm8cjxDKMhB8joQbrFx/view?usp=sharing).  
-You can download Human Semantics Generation Module checkpoint from [here] (https://pan.baidu.com/s/1Ds8Rj6ioTFXppE5vkSLI8A?pwd=x67y)
+#### Real World Dateset
 
-## Results
-Examples of virtual try-on results synthesized by our method. Given a reference human body image and a product clothing image, our method can synthesize a high-quality virtual try-on result while preserving garment details.
-![result](./example.png)
+```
+python ./LSG/main.py --exp_name LiteSpiralGCN --PHASE eval --config_file .\LSG\configs\LiteSpiralGCN.yml
+```
+NOTE: The model has not been trained on `the Real World Dataset`.
+## More qualitative results
+<p float="left">
+  <img src="docx/png_Freihand_real_RHD_HO3D.png" width="66%" />
+</p>
+<p float="left">
+  <img src="docx/png_LiteSpiralGCNvsMobrecon_Freihand.png" width="66%" />
+</p>
 
+## Acknowledgement
+Our experiment is built upon an open-source GitHub repository. We would like to express our gratitude to the authors of the following listed code, whose work has greatly facilitated the progress of our experiment. If their work has been helpful to you, please consider citing them.
++ [HandMesh](https://github.com/SeanChenxy/HandMesh)
++ [SAR](https://github.com/zxz267/SAR)
++ [freihand](https://github.com/lmb-freiburg/freihand)
 
-## Reference
-> Han Yang, Ruimao Zhang, Xiaobao Guo, Wei Liu, and Wang
-Zuo. Towards photo-realistic virtual try-on by adaptively generating-preserving image content. In IEEE Conf. on Computer Vision and Pattern Recognition (CVPR), pp 7850-7859 (2020). IEEE
-
-> Minqi Li, Richard Yida Xu, Jing Xin, Kaibing Zhang, and Junfeng Jing. Fast non-rigid points registration with cluster correspondences projection. Signal Processing, 170: 107455, 2020.
-
-> Lee, S., Gu, G., Park, S., Choi, S. and Choo, J. High-Resolution Virtual Try-On with Misalignment and Occlusion-Handled Conditions. Proc. of the European Conference on Computer Vision (ECCV), pp 204-219 (2022). Springer
