@@ -50,7 +50,7 @@
   python LSG/models/litespiralgcn.py
   ```
 ## Real-time demo
-+ Download the pre-trained weights of LiteSpiralGCN from [Baidu cloud](https://pan.baidu.com/s/1n5OtppDWe6UQX7bhBAbvww) and fill in the correct weight address in line 8 of the [$ROOT/LSG/LiteSpiralGCN.yml](LSG/configs/LiteSpiralGCN.yml).
++ Download the pre-trained weights of LiteSpiralGCN from [Baidu cloud](https://pan.baidu.com/s/1ZkMzCDjzUeagXhdqu4Yp_A?pwd=1024) and fill in the correct weight address in line 8 of the [$ROOT/LSG/LiteSpiralGCN.yml](LSG/configs/LiteSpiralGCN.yml).
 + To visualize the 778 vertices of the generated hand mesh using the `OpenCV` library, and visualize the 21 2D hand keypoints generated in the intermediate stages of the model, please run:
   ```
   python ./LSG/main.py --PHASE demo --config_file .\LSG\configs\LiteSpiralGCN.yml
@@ -91,7 +91,7 @@
 ## Dataset preparation
 #### FreiHAND
 + Please download FreiHAND dataset from [this link](https://lmb.informatik.uni-freiburg.de/projects/freihand/), and extract it to the `data/FreiHAND` directory.
-+ Download mesh GT file `freihand_train_mesh.zip` from [Baidu cloud](https://pan.baidu.com/s/1n5OtppDWe6UQX7bhBAbvww), and unzip it under `data/FreiHAND/training` directory.
++ Download mesh GT file `freihand_train_mesh.zip` from [Baidu cloud](https://pan.baidu.com/s/12X1qsuxO2j8jGl6QWJdV6A?pwd=rc4x), and unzip it under `data/FreiHAND/training` directory.
 #### Real World Testset
 + Please download the dataset from [this link](https://github.com/3d-hand-shape/hand-graph-cnn/tree/master/data/real_world_testset), and extract it to the `data/Ge` directory.
 #### Complement data
@@ -152,7 +152,7 @@
   |   |   |-- test
 
 ```  
-+ Download the pre-trained weights of densestack from [Baidu cloud](https://pan.baidu.com/s/1n5OtppDWe6UQX7bhBAbvww) and fill in the correct weight address in line `234` of [$ROOT/LSG/models/densestack.py](LSG/models/densestack.py).
++ Download the pre-trained weights of densestack from [Baidu cloud](https://pan.baidu.com/s/12X1qsuxO2j8jGl6QWJdV6A?pwd=rc4x) and fill in the correct weight address in line `234` of [$ROOT/LSG/models/densestack.py](LSG/models/densestack.py).
 + Please fill in appropriate training parameters in [$ROOT\LSG\configs\LiteSpiralGCN.yml](LSG/configs/LiteSpiralGCN.yml). Run:
 ```
   python ./LSG/main.py --exp_name LiteSpiralGCN --PHASE train --Local_testing --config_file .\LSG\configs\LiteSpiralGCN.yml
