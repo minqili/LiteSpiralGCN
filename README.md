@@ -50,7 +50,7 @@
   python LSG/models/litespiralgcn.py
   ```
 ## Real-time demo
-+ Download the pre-trained weights of LiteSpiralGCN from [Baidu cloud](https://pan.baidu.com/s/1ZkMzCDjzUeagXhdqu4Yp_A?pwd=1024) and fill in the correct weight address in line 8 of the [$ROOT/LSG/LiteSpiralGCN.yml](LSG/configs/LiteSpiralGCN.yml).
++ Download the pre-trained weights of LiteSpiralGCN from [Baidu cloud](https://pan.baidu.com/s/1ZkMzCDjzUeagXhdqu4Yp_A?pwd=1024) or [Google Drive](https://drive.google.com/file/d/1LLM-VPQa5xEPXVgssBpCmhmuDgM2o9JH/view?usp=sharing) and fill in the correct weight address in line 8 of the [$ROOT/LSG/LiteSpiralGCN.yml](LSG/configs/LiteSpiralGCN.yml).
 + To visualize the 778 vertices of the generated hand mesh using the `OpenCV` library, and visualize the 21 2D hand keypoints generated in the intermediate stages of the model, please run:
   ```
   python ./LSG/main.py --PHASE demo --config_file .\LSG\configs\LiteSpiralGCN.yml
